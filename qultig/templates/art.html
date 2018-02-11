@@ -27,7 +27,8 @@
                                 <div class="collapse mcq_info" id="collapse_info_{{ index }}">
                                     <div class="panel panel-default">
                                         <div class="panel-heading">
-                                            <button type="button" class="close" data-target="#collapse_info_{{ index }}" data-toggle="collapse" aria-label="Close"><span
+                                            <button type="button" class="close" data-target="#collapse_info_{{ index }}"
+                                                    data-toggle="collapse" aria-label="Close"><span
                                                     aria-hidden="true">&times;</span></button>
                                             <h3 class="panel-title">Information</h3>
                                         </div>
@@ -49,6 +50,10 @@
                                                 </dd>
                                                 <dt>Location</dt>
                                                 <dd>{{ item.painting.location }}</dd>
+                                                {% if item.painting.comment %}
+                                                    <dt>Comment</dt>
+                                                    <dd>{{ item.painting.comment }}</dd>
+                                                {% endif %}
                                             </dl>
                                             <hr>
                                             <dl class="dl-horizontal">

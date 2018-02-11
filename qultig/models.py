@@ -1,6 +1,6 @@
 import enum
 
-from sqlalchemy import Column, Table, Integer, Sequence, Boolean, String, Enum
+from sqlalchemy import Column, Table, Integer, Sequence, Boolean, String, Enum, UnicodeText
 from sqlalchemy import ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
@@ -49,6 +49,8 @@ class Painting(Base):
 
     location = Column(String(50), nullable=True)
     style = Column(String(50), nullable=True)
+
+    comment = Column(UnicodeText, nullable=True)
 
     source_name = Column(String(50), nullable=True)
     source_url = Column(String(50), nullable=True)
