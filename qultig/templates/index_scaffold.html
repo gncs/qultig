@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="qultig">
+    <meta name="author" content="gncs">
+
+    <title>qultig</title>
+
+    {# CSS libaries #}
+    {# Bootstrap #}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    {# Ionicons #}
+    <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
+    <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
+
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
+</head>
+
+<body>
+
+<nav class="navbar navbar-default navbar-static-top">
+    <div class="container-fluid">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">
+                    <span class="ion-android-color-palette"></span>
+                    qultig
+                </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">Categories <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="art"><span class="ion-paintbrush"></span> Art</a></li>
+                            <li class="disabled"><a href="#"><span class="ion-music-note"></span> Music <span
+                                    class="label label-primary">coming soon</span> </a></li>
+                            <li class="disabled"><a href="#"><span class="ion-ios-location"></span> Landmarks <span
+                                    class="label label-primary">coming soon</span> </a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="http://www.gncs.me/projects/">About</a></li>
+                    <li><a href="http://www.gncs.me">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div id="quiz">
+        {% block quiz_body %}{% endblock %}
+    </div>
+</div>
+
+<footer class="footer">
+    <div align="middle">
+        <p class="text-muted">
+            <i class="ion-android-color-palette"></i>
+            qultig
+        </p>
+    </div>
+</footer>
+
+</body>
+
+{# JavaScript libaries #}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+
+{# Custom Javascript modules #}
+<script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename='js/index.js') }}"></script>
+
+{% block javascript %}{% endblock %}
+
+</html>

@@ -1,0 +1,151 @@
+{% extends "index_scaffold.html" %}
+{% block quiz_body %}
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            <h1>Art Quiz</h1>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 0" aria-valuenow="0" aria-valuemin="0"
+                     aria-valuemax="100"></div>
+            </div>
+            <div id="quiz_carousel" class="carousel slide" data-interval="false">
+                <div id="quiz_collection" class="carousel-inner">
+                    {% for index, item in enumerate(items) %}
+                        <div class="item mcq_item" item_id="{{ item.id }}">
+                            <div class="row-fluid">
+                                <div class="caption">
+                                    <div align="center">
+                                        <h3>
+                                            <b>Question {{ index + 1 }}:</b> {{ item.stem.text }}
+                                        </h3>
+                                    </div>
+                                </div>
+                                <div class="thumbnail mcq_thumbnail" align="center"
+                                     data-target="#collapse_info_{{ index }}" aria-expanded="false">
+                                    <img src="{{ item.painting.img_url }}" alt="Image" class="mcq_painting">
+                                </div>
+                                <div class="collapse mcq_info" id="collapse_info_{{ index }}">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <button type="button" class="close" data-target="#collapse_info_{{ index }}" data-toggle="collapse" aria-label="Close"><span
+                                                    aria-hidden="true">&times;</span></button>
+                                            <h3 class="panel-title">Information</h3>
+                                        </div>
+                                        <div class="panel-body">
+                                            <dl class="dl-horizontal">
+                                                <dt>Title</dt>
+                                                <dd>{{ item.painting.title }}</dd>
+                                                <dt>Artist</dt>
+                                                <dd>
+                                                    <a href="{{ item.painting.artist.wiki_search_url }}"
+                                                       target="_blank">{{ item.painting.artist.name }}</a>
+                                                </dd>
+                                                <dt>Date</dt>
+                                                <dd>{{ item.painting.date }}</dd>
+                                                <dt>Style</dt>
+                                                <dd>
+                                                    <a href="{{ item.painting.wiki_search_style_url }}"
+                                                       target="_blank">{{ item.painting.style }}</a>
+                                                </dd>
+                                                <dt>Location</dt>
+                                                <dd>{{ item.painting.location }}</dd>
+                                            </dl>
+                                            <hr>
+                                            <dl class="dl-horizontal">
+                                                <dt>Source</dt>
+                                                <dd>
+                                                    <a href="{{ item.painting.source_url }}"
+                                                       target="_blank">{{ item.painting.source_name }}</a>
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="row">
+                                        {% for option in item.options %}
+                                            <div class="col-sm-6">
+                                                <button type="button" class="btn btn-default btn-lg mcq_button"
+                                                        data-container="body" data-placement="top"
+                                                        data-content="Click on the painting to learn more about it"
+                                                        tabindex="0"
+                                                        option_id={{ option.id }}>
+                                                    {{ option.text }}
+                                                </button>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div align="center">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <div class="btn-group btn-group-justified mcq_option_group" role="group">
+                        <a class="btn btn-default btn-lg" id="button_previous">
+                            Previous
+                        </a>
+                        <a class="btn btn-default btn-lg" id="button_next">
+                            Next
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+
+    <div class="modal fade" id="info-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Information</h4>
+                </div>
+                <div class="modal-body">
+                    <dl class="dl-horizontal">
+                        <dt>Title</dt>
+                        <dd></dd>
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="report-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">All done!</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert" role="alert" id="report">
+                        {# Report goes here! #}
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-primary" href="art" role="button">Play again!</a>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script language="JavaScript" type="text/javascript" src="{{ url_for('static', filename='js/art.js') }}"></script>
+    <script language="JavaScript" type="text/javascript">
+        window.qultig.art()
+    </script>
+{% endblock %}

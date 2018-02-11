@@ -1,0 +1,3 @@
+recursive-include qultig/static *
+recursive-include qultig/templates *
+
