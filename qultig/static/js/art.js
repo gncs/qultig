@@ -5,6 +5,7 @@ var current = 0;
 var asked = 0;
 var items = [];
 var score = 0;
+var moving = false;
 
 var setup = function () {
     // Collection quizzes
@@ -19,6 +20,15 @@ var setup = function () {
         previous();
     });
 
+    // Lock carousel while moving
+    var carousel = $('#quiz_carousel');
+    carousel.on('slide.bs.carousel', function () {
+        moving = true;
+    });
+    carousel.on('slid.bs.carousel', function () {
+        moving = false;
+    });
+
     // Setup MCQ buttons
     items.each(function () {
         $(this).find(".mcq_button").each(function () {
@@ -29,7 +39,6 @@ var setup = function () {
     // Activate first quiz
     items.eq(0).addClass("active");
 
-    //
     make_mcq_buttons_equal_size();
     setup_popover(0);
     update_navigators();
@@ -63,24 +72,28 @@ var setup_popover = function (index) {
     });
 };
 
-// Next item in carousel
 var next = function () {
-    collapse_info();
-
-    $("#quiz_carousel").carousel("next");
-    current += 1;
-
-    make_mcq_buttons_equal_size();
-    update_navigators();
-    update_progress();
+    move(true);
 };
 
-// Next item in carousel
 var previous = function () {
+    move(false);
+};
+
+var move = function(next) {
+    if (moving) {
+        return;
+    }
+
     collapse_info();
 
-    $("#quiz_carousel").carousel("prev");
-    current -= 1;
+    if (next) {
+        $("#quiz_carousel").carousel("next");
+        current += 1;
+    } else {
+        $("#quiz_carousel").carousel("prev");
+        current -= 1;
+    }
 
     make_mcq_buttons_equal_size();
     update_navigators();
