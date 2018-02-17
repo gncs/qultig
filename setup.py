@@ -7,7 +7,7 @@ def readme():
 
 
 setup(name='qultig',
-      version='0.1.7',
+      version='0.1.8',
       description='A tiny Flask app for awesome quizzes',
       long_description=readme(),
       classifiers=['Programming Language :: Python :: 3.5'],
