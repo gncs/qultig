@@ -22,6 +22,7 @@ setup(name='qultig',
           'flask',
           'sqlalchemy',
           'pandas',
+          'hashids',
       ],
       zip_safe=False,
       )

@@ -85,6 +85,12 @@ class Option(Base):
     items = relationship('Item', secondary=item_option_association, uselist=True, back_populates='options')
 
 
+quiz_item_association = Table('quiz_item_association', Base.metadata,
+                              Column('quiz_id', Integer, ForeignKey('quizzes.id')),
+                              Column('item_id', Integer, ForeignKey('items.id')),
+                              )
+
+
 class Item(Base):
     __tablename__ = 'items'
 
@@ -101,6 +107,18 @@ class Item(Base):
     key_id = Column(Integer, ForeignKey(Option.id), nullable=False)
     key = relationship(Option, uselist=False, foreign_keys=[key_id])
 
+    quizzes = relationship('Quiz', secondary=quiz_item_association, uselist=True, back_populates='items')
+
     def __repr__(self):
         return "<Item(id='{}', painting_id='{}', options='{}', key='{}')>".format(self.id, self.painting_id,
                                                                                   self.options, self.key)
+
+
+class Quiz(Base):
+    __tablename__ = 'quizzes'
+
+    id = Column(Integer, Sequence('quiz_id_seq'), primary_key=True)
+    items = relationship('Item', secondary=quiz_item_association, uselist=True, back_populates='quizzes')
+
+    def __repr__(self):
+        return "<Quiz(id='{}')>".format(self.id)

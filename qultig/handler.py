@@ -1,10 +1,13 @@
 import random
 from collections import namedtuple
-from typing import List
 
 from sqlalchemy.orm import Session
 
 from qultig import models
+
+
+class HandlerError(Exception):
+    pass
 
 
 class CategoryDistribution(dict):
@@ -16,7 +19,7 @@ class CategoryDistribution(dict):
         self[models.StemCategory.title] = title
 
 
-def build_art_item(session: Session, category_distr: CategoryDistribution) -> List[models.Item]:
+def build_art_quiz(session: Session, category_distr: CategoryDistribution) -> models.Quiz:
     selected_ids = []
 
     for category, count in category_distr.items():
@@ -26,7 +29,19 @@ def build_art_item(session: Session, category_distr: CategoryDistribution) -> Li
 
     items = list(session.query(models.Item).filter(models.Item.id.in_(selected_ids)))
     random.shuffle(items)
-    return items
+
+    quiz = models.Quiz(items=items)
+    session.add(quiz)
+    session.commit()
+
+    return quiz
+
+
+def get_art_quiz(session: Session, quiz_id: int) -> models.Quiz:
+    result = session.query(models.Quiz).get(quiz_id)
+    if not result:
+        raise HandlerError("Cannot find quiz with id '" + str(quiz_id) + "'")
+    return result
 
 
 Response = namedtuple('Response', ['item_id', 'option_id'])

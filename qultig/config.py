@@ -9,6 +9,7 @@ class Config(object):
     CSRF_ENABLED = True
 
     DATABASE_URI = 'sqlite:///' + os.getenv('SQLITE_PATH')
+    HASH_SALT = os.getenv('HASH_SALT')
 
 
 class ProductionConfig(Config):

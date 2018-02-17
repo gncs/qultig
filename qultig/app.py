@@ -1,6 +1,7 @@
 import os
 
-from flask import Flask, request, jsonify, render_template, g
+import hashids
+from flask import Flask, request, jsonify, render_template, g, redirect, url_for
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -37,8 +38,18 @@ def show_entries():
 @app.route('/art', methods=['GET'])
 def art():
     db = get_db()
-    category_dist = handler.CategoryDistribution()
-    return render_template('art.html', items=handler.get_art_quizzes(db, category_dist))
+    h = hashids.Hashids(salt=app.config['HASH_SALT'])
+
+    try:
+        decoded_tuple = h.decode(request.args['q'])
+        quiz_id = int(decoded_tuple[0])
+        quiz = handler.get_art_quiz(db, quiz_id)
+
+    except (KeyError, IndexError, handler.HandlerError, ValueError):
+        new_quiz = handler.build_art_quiz(db, handler.CategoryDistribution())
+        return redirect(url_for('art', q=h.encode(new_quiz.id)))
+
+    return render_template('art.html', items=quiz.items)
 
 
 @app.route('/evaluate_art', methods=['POST'])
