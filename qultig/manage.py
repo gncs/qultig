@@ -11,17 +11,17 @@ import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from qultig.models import Base, Artist, Painting, Stem, Quiz, Option, StemCategory
+from qultig.models import Base, Artist, Painting, Stem, Item, Option, StemCategory
 
 
 def setup(engine, data_dir: str, num_options=4, **kwargs):
     drop_all(engine)
     load_authors(engine, data_dir)
     load_paintings(engine, data_dir)
-    create_who_quizzes(engine, num_options)
-    create_style_quizzes(engine, num_options)
-    create_date_quizzes(engine, num_options)
-    create_title_quizzes(engine, num_options)
+    create_who_items(engine, num_options)
+    create_style_items(engine, num_options)
+    create_date_items(engine, num_options)
+    create_title_items(engine, num_options)
 
 
 def drop_all(engine):
@@ -64,17 +64,17 @@ def load_paintings(engine, data_dir: str):
         session.commit()
 
 
-def create_who_quizzes(engine, num_options: int):
-    logging.info("Creating 'who' quizzes")
+def create_who_items(engine, num_options: int):
+    logging.info("Creating 'who' items")
     Session = sessionmaker(bind=engine)
     session = Session()
 
     stem = Stem(text='Who drew this painting?', category=StemCategory.who)
     artists = list(session.query(Artist).all())
 
-    quizzes = []
+    items = []
     for painting in session.query(Painting).filter(~Painting.is_detail):
-        q = Quiz()
+        q = Item()
 
         q.stem = stem
         q.painting = painting
@@ -88,23 +88,23 @@ def create_who_quizzes(engine, num_options: int):
         q.options = list(options.values())
         q.key = options[key_text]
 
-        quizzes.append(q)
+        items.append(q)
 
-    session.add_all(quizzes)
+    session.add_all(items)
     session.commit()
 
 
-def create_style_quizzes(engine, num_options: int):
-    logging.info("Creating 'style' quizzes")
+def create_style_items(engine, num_options: int):
+    logging.info("Creating 'style' items")
     Session = sessionmaker(bind=engine)
     session = Session()
 
     stem = Stem(text="What is this painting's style of art?", category=StemCategory.style)
     styles = [item[0] for item in session.query(Painting.style).distinct()]
 
-    quizzes = []
+    items = []
     for painting in session.query(Painting).filter(~Painting.is_detail):
-        q = Quiz()
+        q = Item()
 
         q.stem = stem
         q.painting = painting
@@ -118,22 +118,22 @@ def create_style_quizzes(engine, num_options: int):
         q.options = list(options.values())
         q.key = options[key_text]
 
-        quizzes.append(q)
+        items.append(q)
 
-    session.add_all(quizzes)
+    session.add_all(items)
     session.commit()
 
 
-def create_date_quizzes(engine, num_options: int, date_increment: int = 50):
-    logging.info("Creating 'date' quizzes")
+def create_date_items(engine, num_options: int, date_increment: int = 50):
+    logging.info("Creating 'date' items")
     Session = sessionmaker(bind=engine)
     session = Session()
 
     stem = Stem(text="When was this painting drawn?", category=StemCategory.date)
 
-    quizzes = []
+    items = []
     for painting in session.query(Painting).filter(Painting.is_int_date).filter(~Painting.is_detail):
-        q = Quiz()
+        q = Item()
 
         q.stem = stem
         q.painting = painting
@@ -147,14 +147,14 @@ def create_date_quizzes(engine, num_options: int, date_increment: int = 50):
         q.options = list(options.values())
         q.key = options[key_text]
 
-        quizzes.append(q)
+        items.append(q)
 
-    session.add_all(quizzes)
+    session.add_all(items)
     session.commit()
 
 
-def create_title_quizzes(engine, num_options: int):
-    logging.info("Creating 'title' quizzes")
+def create_title_items(engine, num_options: int):
+    logging.info("Creating 'title' items")
     Session = sessionmaker(bind=engine)
     session = Session()
 
@@ -162,9 +162,9 @@ def create_title_quizzes(engine, num_options: int):
     titles = [item[0] for item in
               session.query(Painting.title).filter(~Painting.is_detail).filter(Painting.clean_title)]
 
-    quizzes = []
+    items = []
     for painting in session.query(Painting).filter(Painting.is_detail):
-        q = Quiz()
+        q = Item()
 
         q.stem = stem
         q.painting = painting
@@ -177,9 +177,9 @@ def create_title_quizzes(engine, num_options: int):
         q.options = list(options.values())
         q.key = options[key_text]
 
-        quizzes.append(q)
+        items.append(q)
 
-    session.add_all(quizzes)
+    session.add_all(items)
     session.commit()
 
 
@@ -214,7 +214,7 @@ def print_content(engine, *args, **kwargs):
 
     print('Number of paintings: ' + str(session.query(Painting).count()))
     print('Number of artists: ' + str(session.query(Artist).count()))
-    print('Number of quizzes: ' + str(session.query(Quiz).count()))
+    print('Number of items: ' + str(session.query(Item).count()))
 
 
 def create_parser():

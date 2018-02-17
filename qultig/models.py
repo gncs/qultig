@@ -70,8 +70,8 @@ class Stem(Base):
     text = Column(String(50), nullable=False)
 
 
-quiz_option_association = Table('quiz_option_association', Base.metadata,
-                                Column('quiz_id', Integer, ForeignKey('quizzes.id')),
+item_option_association = Table('item_option_association', Base.metadata,
+                                Column('item_id', Integer, ForeignKey('items.id')),
                                 Column('option_id', Integer, ForeignKey('options.id')),
                                 )
 
@@ -82,13 +82,13 @@ class Option(Base):
     id = Column(Integer, Sequence('option_id_seq'), primary_key=True)
     text = Column(String(50), nullable=False)
 
-    quizzes = relationship('Quiz', secondary=quiz_option_association, uselist=True, back_populates='options')
+    items = relationship('Item', secondary=item_option_association, uselist=True, back_populates='options')
 
 
-class Quiz(Base):
-    __tablename__ = 'quizzes'
+class Item(Base):
+    __tablename__ = 'items'
 
-    id = Column(Integer, Sequence('quiz_id_seq'), primary_key=True)
+    id = Column(Integer, Sequence('item_id_seq'), primary_key=True)
 
     stem_id = Column(Integer, ForeignKey('stems.id'), nullable=False)
     stem = relationship('Stem', uselist=False, foreign_keys=[stem_id])
@@ -96,11 +96,11 @@ class Quiz(Base):
     painting_id = Column(Integer, ForeignKey('paintings.id'), nullable=False)
     painting = relationship('Painting', uselist=False, foreign_keys=[painting_id])
 
-    options = relationship('Option', secondary=quiz_option_association, uselist=True, back_populates='quizzes')
+    options = relationship('Option', secondary=item_option_association, uselist=True, back_populates='items')
 
     key_id = Column(Integer, ForeignKey(Option.id), nullable=False)
     key = relationship(Option, uselist=False, foreign_keys=[key_id])
 
     def __repr__(self):
-        return "<Question(id='{}', painting_id='{}', options='{}', key='{}')>".format(self.id, self.painting_id,
-                                                                                      self.options, self.key)
+        return "<Item(id='{}', painting_id='{}', options='{}', key='{}')>".format(self.id, self.painting_id,
+                                                                                  self.options, self.key)

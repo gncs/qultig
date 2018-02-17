@@ -16,17 +16,17 @@ class CategoryDistribution(dict):
         self[models.StemCategory.title] = title
 
 
-def get_art_quizzes(session: Session, category_distr: CategoryDistribution) -> List[models.Quiz]:
+def build_art_item(session: Session, category_distr: CategoryDistribution) -> List[models.Item]:
     selected_ids = []
 
     for category, count in category_distr.items():
         stem = session.query(models.Stem).filter(models.Stem.category == category).first()
-        quiz_ids = [item[0] for item in session.query(models.Quiz.id).filter(models.Quiz.stem == stem)]
-        selected_ids += random.sample(quiz_ids, count)
+        item_ids = [item[0] for item in session.query(models.Item.id).filter(models.Item.stem == stem)]
+        selected_ids += random.sample(item_ids, count)
 
-    quizzes = list(session.query(models.Quiz).filter(models.Quiz.id.in_(selected_ids)))
-    random.shuffle(quizzes)
-    return quizzes
+    items = list(session.query(models.Item).filter(models.Item.id.in_(selected_ids)))
+    random.shuffle(items)
+    return items
 
 
 Response = namedtuple('Response', ['item_id', 'option_id'])
@@ -34,10 +34,10 @@ Feedback = namedtuple('Feedback', ['correct', 'labels'])
 
 
 def get_art_feedback(session: Session, response: Response) -> Feedback:
-    quiz = session.query(models.Quiz).filter(models.Quiz.id == response.item_id).first()
+    item = session.query(models.Item).filter(models.Item.id == response.item_id).first()
 
-    correct = response.option_id == quiz.key.id
-    labels = {quiz.key.id: True}
+    correct = response.option_id == item.key.id
+    labels = {item.key.id: True}
 
     if not correct:
         labels.update({response.option_id: False})
