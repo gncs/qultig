@@ -63,6 +63,11 @@ body {
     max-height: 25em;
 }
 
+.copy-clipboard-span {
+    float: right;
+    font-size: 0.75em;
+}
+
 .panel-heading h3 {
     /* Ensure x button and heading are aligned */
     padding-top: 0.25em;

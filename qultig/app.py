@@ -49,7 +49,7 @@ def art():
         new_quiz = handler.build_art_quiz(db, handler.CategoryDistribution())
         return redirect(url_for('art', q=h.encode(new_quiz.id)))
 
-    return render_template('art.html', items=quiz.items)
+    return render_template('art.html', items=quiz.items, quiz_url=request.url)
 
 
 @app.route('/evaluate_art', methods=['POST'])

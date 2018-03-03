@@ -11,15 +11,20 @@ var setup = function () {
     // Collection quizzes
     items = $(".mcq_item");
 
-    // Setup navigation buttons
-    $("#button_next").on("click", function () {
-        next();
-    });
+    setup_info_popover();
+    setup_copy_clipboard_popover();
+    close_popovers();
 
-    $("#button_previous").on("click", function () {
-        previous();
-    });
+    setup_navigation_buttons();
+    setup_carousel();
+    activate_mcq_buttons();
 
+    make_mcq_buttons_equal_size();
+    update_navigators();
+    update_progress();
+};
+
+var setup_carousel = function () {
     // Lock carousel while moving
     var carousel = $('#quiz_carousel');
     carousel.on('slide.bs.carousel', function () {
@@ -29,20 +34,26 @@ var setup = function () {
         moving = false;
     });
 
-    // Setup MCQ buttons
+    // Activate first quiz
+    items.eq(0).addClass("active");
+};
+
+var activate_mcq_buttons = function () {
     items.each(function () {
         $(this).find(".mcq_button").each(function () {
             $(this).click(make_choice);
         });
     });
+};
 
-    // Activate first quiz
-    items.eq(0).addClass("active");
+var setup_navigation_buttons = function () {
+    $("#button_next").on("click", function () {
+        next();
+    });
 
-    make_mcq_buttons_equal_size();
-    setup_popover(0);
-    update_navigators();
-    update_progress();
+    $("#button_previous").on("click", function () {
+        previous();
+    });
 };
 
 var enable_info = function () {
@@ -53,13 +64,14 @@ var collapse_info = function () {
     $('.mcq_info').collapse('hide');
 };
 
-var setup_popover = function (index) {
-    items.eq(index).find(".mcq_button").each(function () {
+var setup_info_popover = function () {
+    items.eq(0).find(".mcq_button").each(function () {
         $(this).attr("data-toggle", "popover");
+        $(this).popover();
     });
+};
 
-    $('[data-toggle="popover"]').popover();
-
+var close_popovers = function () {
     $(document).on('click', function (e) {
         $('[data-toggle="popover"],[data-original-title]').each(function () {
             //the 'is' for buttons that trigger popups
@@ -72,6 +84,22 @@ var setup_popover = function (index) {
     });
 };
 
+var setup_copy_clipboard_popover = function () {
+    var item = $(".copy-clipboard-span");
+
+    item.on('click', function () {
+        var quiz_url = document.getElementById('quiz-url').value;
+        $(this).attr('data-title', 'Share Quiz');
+        $(this).attr('data-content',
+            '<div><input id="fake_input" value=' + quiz_url + '></div>' +
+            '<div style="float: right; margin-top: 0.5em;">' +
+            '<button type="button" class="btn btn-default btn-sm" id="share_button" onclick="copy_to_clipboard(\'fake_input\')">Copy</button>' +
+            '</div>'
+        );
+        $(this).popover('show');
+    });
+};
+
 var next = function () {
     move(true);
 };
@@ -80,7 +108,7 @@ var previous = function () {
     move(false);
 };
 
-var move = function(next) {
+var move = function (next) {
     if (moving) {
         return;
     }
@@ -256,6 +284,18 @@ var make_mcq_buttons_equal_size = function () {
         $(value).height(highestBox);
     });
 };
+
+// Copy to clipboard
+function copy_to_clipboard(element_id) {
+    /* Get the text field */
+    var copyText = document.getElementById(element_id);
+
+    /* Select the text field */
+    copyText.select();
+
+    /* Copy the text inside the text field */
+    document.execCommand("Copy");
+}
 
 // Hook
 qultig.art = function () {
