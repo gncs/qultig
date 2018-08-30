@@ -30,24 +30,32 @@ def get_db():
     return g.database
 
 
+def redirect_to_art():
+    """Redirect to art page"""
+    db = get_db()
+    h = hashids.Hashids(salt=app.config['HASH_SALT'])
+    new_quiz = handler.build_art_quiz(db, handler.CategoryDistribution())
+    return redirect(url_for('art', q=h.encode(new_quiz.id)))
+
+
 @app.route('/')
 def show_entries():
-    return render_template('index.html', quiz=None)
+    return redirect_to_art()
 
 
 @app.route('/art', methods=['GET'])
 def art():
-    db = get_db()
-    h = hashids.Hashids(salt=app.config['HASH_SALT'])
-
     try:
+        db = get_db()
+        h = hashids.Hashids(salt=app.config['HASH_SALT'])
+
+        # Attempt to obtain the quid id
         decoded_tuple = h.decode(request.args['q'])
         quiz_id = int(decoded_tuple[0])
         quiz = handler.get_art_quiz(db, quiz_id)
 
     except (KeyError, IndexError, handler.HandlerError, ValueError):
-        new_quiz = handler.build_art_quiz(db, handler.CategoryDistribution())
-        return redirect(url_for('art', q=h.encode(new_quiz.id)))
+        return redirect_to_art()
 
     return render_template('art.html', items=quiz.items, quiz_url=request.url)
 
