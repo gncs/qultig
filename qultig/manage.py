@@ -69,7 +69,7 @@ def create_who_items(engine, num_options: int):
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    stem = Stem(text='Who drew this painting?', category=StemCategory.who)
+    stem = Stem(text='Who made this painting?', category=StemCategory.who)
     artists = list(session.query(Artist).all())
 
     items = []
@@ -129,7 +129,7 @@ def create_date_items(engine, num_options: int, date_increment: int = 50):
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    stem = Stem(text="When was this painting drawn?", category=StemCategory.date)
+    stem = Stem(text="When was this painting made?", category=StemCategory.date)
 
     items = []
     for painting in session.query(Painting).filter(Painting.is_int_date).filter(~Painting.is_detail):
@@ -158,7 +158,7 @@ def create_title_items(engine, num_options: int):
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    stem = Stem(text="What is the painting's title?", category=StemCategory.title)
+    stem = Stem(text="What is this painting's title?", category=StemCategory.title)
     titles = [item[0] for item in
               session.query(Painting.title).filter(~Painting.is_detail).filter(Painting.clean_title)]
 
